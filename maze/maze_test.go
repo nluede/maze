@@ -11,8 +11,6 @@ func TestNew(t *testing.T) {
 		height int
 	}
 
-	var emptyStructure [][]bool
-
 	tests := []struct {
 		name string
 		args args
@@ -21,22 +19,22 @@ func TestNew(t *testing.T) {
 		{
 			name: "Maze with given size is created in given size",
 			args: args{width: 1, height: 3},
-			want: Maze{width: 1, height: 3, structure: createStructure(1, 3)},
+			want: createMazeFromString(1, 3, "XXX"),
 		},
 		{
 			name: "Maze with just one field gets created",
 			args: args{width: 1, height: 1},
-			want: Maze{width: 1, height: 1, structure: createStructure(1, 1)},
+			want: createMazeFromString(1, 1, "X"),
 		},
 		{
 			name: "Negative size parameters create zero sized maze",
 			args: args{width: -1, height: -1},
-			want: Maze{width: 0, height: 0, structure: emptyStructure},
+			want: createMazeFromString(0, 0, ""),
 		},
 		{
 			name: "Zero as parameter creates a zero sized maze",
 			args: args{width: 0, height: 0},
-			want: Maze{width: 0, height: 0, structure: emptyStructure},
+			want: createMazeFromString(0, 0, ""),
 		},
 	}
 	for _, tt := range tests {
@@ -137,21 +135,13 @@ func TestSet(t *testing.T) {
 	}
 }
 
-func createStructure(width int, height int) [][]bool {
-	result := make([][]bool, height)
-	for i := range result {
-		result[i] = make([]bool, width)
-	}
-	return result
-}
-
 func createMazeFromString(width, height int, input string) Maze {
 	maze := New(width, height)
 	for y := 0; y < height; y++ {
 		for x := 0; x < width; x++ {
-			currentCharPosition := y*width + x
-			currentChar := input[currentCharPosition]
-			if currentChar == '_' {
+			charPosition := y*width + x
+			char := input[charPosition]
+			if char == '_' {
 				maze.Set(x, y, false)
 			}
 		}
