@@ -65,12 +65,12 @@ func TestSet(t *testing.T) {
 					"XX"+
 					"XX"+
 					"XX"),
-			args: args{x: 2, y: 2, isPassway: true},
+			args: args{x: 2, y: 3, isPassway: true},
 			want: createMazeFromString(2, 3,
 				""+
 					"XX"+
-					"X_"+
-					"XX"),
+					"XX"+
+					"X_"),
 		},
 		{
 			name: "Wall is set correctly on a maze without any walls",
@@ -135,6 +135,46 @@ func TestSet(t *testing.T) {
 	}
 }
 
+func TestMaze_IsPassway(t *testing.T) {
+	type args struct {
+		x int
+		y int
+	}
+	tests := []struct {
+		name  string
+		given Maze
+		args  args
+		want  bool
+	}{
+		{
+			name: "IsPassway returns true when there is a passway",
+			given: createMazeFromString(2, 2,
+				""+
+					"__"+
+					"__"),
+			args: args{x: 1, y: 2},
+			want: true,
+		},
+		{
+			name: "IsPassway returns false when there is a wall",
+			given: createMazeFromString(2, 2,
+				""+
+					"__"+
+					"X_"),
+			args: args{x: 1, y: 2},
+			want: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			maze := tt.given
+			if got := maze.IsPassway(tt.args.x, tt.args.y); got != tt.want {
+				t.Errorf("Maze.IsPassway() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func createMazeFromString(width, height int, input string) Maze {
 	maze := New(width, height)
 	for y := 0; y < height; y++ {
@@ -142,7 +182,7 @@ func createMazeFromString(width, height int, input string) Maze {
 			charPosition := y*width + x
 			char := input[charPosition]
 			if char == '_' {
-				maze.Set(x, y, false)
+				maze.Set(x, y, true)
 			}
 		}
 	}

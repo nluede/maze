@@ -36,6 +36,12 @@ func (maze *Maze) Set(x, y int, isPassway bool) {
 	maze.structure[y][x] = isPassway
 }
 
+// IsPassway checks if there is a passwaz at the given coordinates or not. If there is a passway, true gets returned.
+// If there is a wall at the given coordinates, false gets returned.
+func (maze *Maze) IsPassway(x, y int) bool {
+	return maze.structure[y-1][x-1]
+}
+
 // Print prints out the maze to stdout
 func (maze *Maze) Print() {
 	for _, row := range maze.structure {
@@ -44,14 +50,14 @@ func (maze *Maze) Print() {
 }
 
 func printRow(row []bool) {
-	passwaySymbol := ".."
-	wallSymbol := "██"
+	passway := ".."
+	wall := "██"
 
-	for _, element := range row {
-		if element {
-			fmt.Print(passwaySymbol)
+	for _, e := range row {
+		if e {
+			fmt.Print(passway)
 		} else {
-			fmt.Print(wallSymbol)
+			fmt.Print(wall)
 		}
 	}
 
